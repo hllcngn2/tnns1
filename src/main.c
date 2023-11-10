@@ -6,10 +6,6 @@
 #include "more/struct1.h"
 #include "more/rngbrush.h"
 
-void print_help(){
-printf("usage:\n");
-return;}
-
 #ifdef main//avoid WinMain error
 #undef main//on windows
 #endif
@@ -43,14 +39,14 @@ SDL_SetRenderTarget(renderer, NULL);
 
 //TODO: remove rects
 // loading sprites
-SDL_Surface *s_char =SDL_LoadBMP("img/char_16x24-front.bmp");
+SDL_Surface *s_char =SDL_LoadBMP("ass/char_16x24-front.bmp");
 SDL_SetColorKey(s_char,SDL_TRUE,SDL_MapRGB(s_char->format,0x6F,0xFF,0x7F));
 SDL_Texture *t_char =SDL_CreateTextureFromSurface(renderer, s_char);
 SDL_FreeSurface(s_char);
 vect plpos =(vect){SPRITE_SIZE*9+8,SPRITE_SIZE*5+4+8*ASPECT_RATIO};
 SDL_Rect r_char =(SDL_Rect){plpos.x,plpos.y,16*ASPECT_RATIO,24*ASPECT_RATIO};
 //
-SDL_Surface *sprite1 =SDL_LoadBMP("img/bush_16.bmp");
+SDL_Surface *sprite1 =SDL_LoadBMP("ass/bush_16.bmp");
 SDL_SetColorKey(sprite1,SDL_TRUE,SDL_MapRGB(sprite1->format,0x6F,0xFF,0x7F));
 SDL_Texture *t_sprite1 =SDL_CreateTextureFromSurface(renderer, sprite1);
 SDL_FreeSurface(sprite1);
