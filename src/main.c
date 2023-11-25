@@ -15,6 +15,10 @@ if (ac>1) p =atof(av[1]); else p =GEN_DEFAULT_P;
 if (ac>2) offs =atoi(av[2]); else offs =GEN_DEFAULT_OFFS;
 if (offs !=-1) offs *=ASPECT_RATIO;
 
+Var var =(Var){ASPECT_RATIO,SPRITE_SIZE};
+Keys keys =(Keys){0,0,0,0,0};
+vect camera =(vect){0,0}; //must start on a tile edge for the grid to fit
+
 rng_init();
 SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE);
 SDL_Window *window =SDL_CreateWindow("tnns",
@@ -51,11 +55,12 @@ SDL_SetColorKey(sprite1,SDL_TRUE,SDL_MapRGB(sprite1->format,0x6F,0xFF,0x7F));
 SDL_Texture *t_sprite1 =SDL_CreateTextureFromSurface(renderer, sprite1);
 SDL_FreeSurface(sprite1);
 int nb =0;
-SDL_Rect *t_sprite_r =generate_terrain(&nb, p, offs);
-
-Var var =(Var){ASPECT_RATIO,SPRITE_SIZE};
-Keys keys =(Keys){0,0,0,0,0};
-vect camera =(vect){0,0}; //must start on a tile edge for the grid to fit
+vect *t_sprite_v =generate_terrain(&nb, p, offs); //<
+//
+SDL_Surface *spriteTree =SDL_LoadBMP("ass/tree_40x48.bmp");
+SDL_SetColorKey(spriteTree,SDL_TRUE,SDL_MapRGB(spriteTree->format,0x6F,0xFF,0x7F));
+SDL_Texture *t_spriteTree =SDL_CreateTextureFromSurface(renderer,spriteTree);
+SDL_FreeSurface(spriteTree);
 
 
 SDL_SetRenderDrawColor(renderer, BG_R,BG_G,BG_B, 0xFF);
@@ -78,11 +83,13 @@ case K_CAMERA: keys.camera =1;
 //		keys.down =0; keys.right =0;}
 	break;
 case K_ZOOMIN:	if (var.zoom>1){
-		var.zoom--;
-		zoom_rects(var.zoom, &r_char, nb, t_sprite_r);}	break;
+		var.zoom--;}
+		//zoom_rects(var.zoom, &r_char, nb, t_sprite_r);}
+		break;
 case K_ZOOMOUT:	if (var.zoom<8){
-		var.zoom++;
-		zoom_rects(var.zoom, &r_char, nb, t_sprite_r);}	break;
+		var.zoom++;}
+		//zoom_rects(var.zoom, &r_char, nb, t_sprite_r);}
+		break;
 default:	break;}
 if (e.type ==SDL_KEYUP) switch(e.key.keysym.sym){
 case K_UP:     keys.up =0;	break;
@@ -108,12 +115,13 @@ if (keys.camera){
 //pixel map with a given ratio to convert
 //keep in mem only the rects' coord in this system
 // displaying
-draw(renderer, &var, camera, t_char, &r_char, nb, t_sprite1, t_sprite_r);
+draw(renderer, &var, camera, t_char, &r_char, nb, t_sprite1, t_sprite_v);
 if (grid_on) draw_grid(renderer, camera, t_grid);
 SDL_RenderPresent(renderer);
 }
 
-free(t_sprite_r);
+//free(t_sprite_r);
+free(t_sprite_v);
 SDL_DestroyTexture(t_sprite1);
 SDL_DestroyTexture(t_char);
 SDL_DestroyTexture(t_grid);

@@ -9,6 +9,21 @@
 //- position & distances are also scaled to the zoom
 void draw(SDL_Renderer* renderer, Var *var, vect camera,
 		SDL_Texture* t_char, SDL_Rect *r_char,
+		int nt, SDL_Texture* t_sprite, vect* t_sprite_v){
+SDL_RenderClear(renderer);
+for (int i=0; i<nt; i++)
+	if (t_sprite_v[i].x <camera.x+WINDOW_WIDTH
+		&& t_sprite_v[i].x >=camera.x-SPRITE_SIZE
+		&& t_sprite_v[i].y <camera.y+WINDOW_HEIGHT
+		&& t_sprite_v[i].y >=camera.y-SPRITE_SIZE){
+	SDL_Rect draw_r =(SDL_Rect){t_sprite_v[i].x -camera.x,
+				t_sprite_v[i].y -camera.y,
+				SPRITE_SIZE,SPRITE_SIZE};
+	SDL_RenderCopy(renderer, t_sprite, NULL, &draw_r);}
+SDL_RenderCopy(renderer, t_char, NULL, r_char);
+	return;}
+void draw_rects(SDL_Renderer* renderer, Var *var, vect camera,
+		SDL_Texture* t_char, SDL_Rect *r_char,
 		int nt, SDL_Texture* t_sprite, SDL_Rect* t_sprite_r){
 SDL_RenderClear(renderer);
 for (int i=0; i<nt; i++)

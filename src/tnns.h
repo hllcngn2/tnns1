@@ -3,20 +3,23 @@
 #include "SDL2/SDL.h"
 #include "more/struct1.h"
 
+//default world generation
 #define GEN_DEFAULT_P 0.35
 #define GEN_DEFAULT_OFFS 7
 
+//controls
 #define K_QUIT	SDLK_0
 #define K_GRID	SDLK_g
 #define K_UP	SDLK_w
 #define K_LEFT	SDLK_a
 #define K_DOWN	SDLK_s
 #define K_RIGHT	SDLK_d
-#define K_CAMERA SDLK_LSHIFT
-#define K_TURNCAMERA SDLK_BACKSLASH
-#define K_ZOOMIN SDLK_z
-#define K_ZOOMOUT SDLK_x
+#define K_CAMERA	SDLK_LSHIFT
+#define K_TURNCAMERA	SDLK_BACKSLASH
+#define K_ZOOMIN	SDLK_z
+#define K_ZOOMOUT	SDLK_x
 
+//color constants
 #define BG_R 0x6F
 #define BG_G 0xFF
 #define BG_B 0x7F
@@ -27,7 +30,7 @@
 
 //TODO: fix this part
 //- add specific sprites base sizes
-#define ASPECT_RATIO 1
+#define ASPECT_RATIO 4
 #define SPRITE_BASE 16
 #define SPRITE_SIZE SPRITE_BASE*ASPECT_RATIO
 #define SPRITES_WIDTH 20
@@ -41,6 +44,7 @@
 #define TERRAIN_WIDTH SPRITES_WIDTH
 #define TERRAIN_HEIGHT SPRITES_HEIGHT
 #define TERRAIN_BORDER 48*ASPECT_RATIO
+
 
 // player
 //first name
@@ -68,10 +72,13 @@ typedef struct {
 }mystruct;
 */
 
-SDL_Rect *generate_terrain(int*,float,int);
+
+//SDL_Rect *generate_terrain(int*,float,int);
+vect *generate_terrain(int*,float,int);
 
 void draw_grid(SDL_Renderer*, vect, SDL_Texture*);
-void draw(SDL_Renderer*, Var*, vect, SDL_Texture*, SDL_Rect*, int, SDL_Texture*, SDL_Rect*);
+//void draw(SDL_Renderer*, Var*, vect, SDL_Texture*, SDL_Rect*, int, SDL_Texture*, SDL_Rect*);
+void draw(SDL_Renderer*, Var*, vect, SDL_Texture*, SDL_Rect*, int, SDL_Texture*, vect*);
 void zoom_rects(int, SDL_Rect*, int, SDL_Rect*);
 
 #endif
