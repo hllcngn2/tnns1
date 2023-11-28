@@ -4,8 +4,8 @@
 #include "more/struct1.h"
 
 //default world generation
-#define GEN_DEFAULT_P 0.35
-#define GEN_DEFAULT_OFFS 7
+#define GEN_DEFAULT_P 0.6
+#define GEN_DEFAULT_OFFS 2
 
 //controls
 #define K_QUIT	SDLK_0
@@ -78,7 +78,7 @@ vect *generate_terrain(int*,float,int);
 
 void draw_grid(SDL_Renderer*, vect, SDL_Texture*);
 //void draw(SDL_Renderer*, Var*, vect, SDL_Texture*, SDL_Rect*, int, SDL_Texture*, SDL_Rect*);
-void draw(SDL_Renderer*, Var*, vect, SDL_Texture*, SDL_Rect*, int, SDL_Texture*, vect*);
+void draw(SDL_Renderer*, Var*, vect, SDL_Texture*, int, SDL_Texture*, vect*);
 void zoom_rects(int, SDL_Rect*, int, SDL_Rect*);
 
 #endif
