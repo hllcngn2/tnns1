@@ -1,29 +1,18 @@
-#include <stdio.h>
-#include <string.h>//strcmp
-#include <stdlib.h>//malloc/free,atoi/f
 #include "SDL2/SDL.h"
+#include <stdlib.h>//free,atoi.f
+#include <string.h>//strcmp
+#include "more/struct1.h"//vect
+#include "more/rngbrush.h"//rng_init
 #include "tnns.h"
-#include "more/struct1.h"
-#include "more/rngbrush.h"
 
 #ifdef main//avoid WinMain error
 #undef main//on windows
 #endif
-int main(int ac, char **av) {
+int main(int ac, char **av){
 
-float p; int offs;
-if (ac>1) p =atof(av[1]); else p =GEN_DEFAULT_P;
-if (ac>2) offs =atoi(av[2]); else offs =GEN_DEFAULT_OFFS;
-if (offs !=-1) offs *=ASPECT_RATIO;
-
-Var var =(Var){ASPECT_RATIO,SPRITE_SIZE};
-Keys keys =(Keys){0,0,0,0,0};
-
-//vect pos =(vect){(WINDOW_WIDTH-16)/2,W}
-//vect plpos =(vect){SPRITE_SIZE*9+8,SPRITE_SIZE*5+4+8*ASPECT_RATIO};
-vect camera =(vect){0,0}; //must start on a tile edge for the grid to fit
-
+//RNG init
 rng_init();
+//SDL init
 SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE);
 SDL_Window *window =SDL_CreateWindow("tnns",
 		SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,
@@ -32,7 +21,9 @@ SDL_Window *window =SDL_CreateWindow("tnns",
 SDL_Renderer *renderer =SDL_CreateRenderer(window, -1,
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-// loading grid
+//TODO: draw grid on the fly
+/*
+//making grid texture
 SDL_Texture *t_grid =SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
 		SDL_TEXTUREACCESS_TARGET, T_GRID_W, T_GRID_H);
 SDL_SetTextureBlendMode(t_grid, SDL_BLENDMODE_BLEND);
@@ -44,6 +35,7 @@ for (int y=SPRITE_SIZE; y<T_GRID_H; y+=SPRITE_SIZE+1)
 	SDL_RenderDrawLine(renderer, 0,y, T_GRID_W-1,y);
 int grid_on =0;
 SDL_SetRenderTarget(renderer, NULL);
+*/
 
 // loading sprites
 SDL_Surface *s_char =SDL_LoadBMP("ass/char_16x24-front.bmp");
@@ -55,16 +47,30 @@ SDL_Surface *sprite1 =SDL_LoadBMP("ass/bush_16.bmp");
 SDL_SetColorKey(sprite1,SDL_TRUE,SDL_MapRGB(sprite1->format,0x6F,0xFF,0x7F));
 SDL_Texture *t_sprite1 =SDL_CreateTextureFromSurface(renderer, sprite1);
 SDL_FreeSurface(sprite1);
-int nb =0;
-vect *t_sprite_v =generate_terrain(&nb, p, offs); //<
 //
 SDL_Surface *spriteTree =SDL_LoadBMP("ass/tree_40x48.bmp");
 SDL_SetColorKey(spriteTree,SDL_TRUE,SDL_MapRGB(spriteTree->format,0x6F,0xFF,0x7F));
 SDL_Texture *t_spriteTree =SDL_CreateTextureFromSurface(renderer,spriteTree);
 SDL_FreeSurface(spriteTree);
 
+//inline arguments parsing
+float p; int offs;
+if (ac>1) p =atof(av[1]); else p =GEN_DEFAULT_P;
+if (ac>2) offs =atoi(av[2]); else offs =GEN_DEFAULT_OFFS;
+if (offs !=-1) offs *=ASPECT_RATIO;
+//other variables initialization
+int grid_on =0;
+Var var =(Var){ASPECT_RATIO,SPRITE_SIZE};
+Keys keys =(Keys){0,0,0,0,0};
 
-SDL_SetRenderDrawColor(renderer, BG_R,BG_G,BG_B, 0xFF);
+//vect pos =(vect){(WINDOW_WIDTH-16)/2,W}
+//vect plpos =(vect){SPRITE_SIZE*9+8,SPRITE_SIZE*5+4+8*ASPECT_RATIO};
+vect camera =(vect){0,0}; //must start on a tile edge for the grid to fit
+
+//terrain generation
+int nb =0;
+vect *t_sprite_v =generate_terrain(&nb, p, offs); //<
+
 int terminate =0;
 SDL_Event e;
 while(!terminate){
@@ -119,7 +125,7 @@ if (keys.camera){
 //keep in mem only the rects' coord in this system
 // displaying
 draw(renderer, &var, camera, t_char, nb, t_sprite1, t_sprite_v);
-if (grid_on) draw_grid(renderer, camera, t_grid);
+if (grid_on) draw_grid(renderer, camera);
 SDL_RenderPresent(renderer);
 }
 
@@ -127,7 +133,7 @@ SDL_RenderPresent(renderer);
 free(t_sprite_v);
 SDL_DestroyTexture(t_sprite1);
 SDL_DestroyTexture(t_char);
-SDL_DestroyTexture(t_grid);
+//SDL_DestroyTexture(t_grid);
 SDL_DestroyRenderer(renderer);
 SDL_DestroyWindow(window);
 SDL_Quit();	return 0;}

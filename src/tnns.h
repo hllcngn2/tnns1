@@ -23,10 +23,10 @@
 #define BG_R 0x6F
 #define BG_G 0xFF
 #define BG_B 0x7F
-#define GRID_R 0xFF
-#define GRID_G 0xFF
-#define GRID_B 0xFF
-#define GRID_A 0x7F
+#define GRID_R 0x94
+#define GRID_G 0x94
+#define GRID_B 0x49
+#define GRID_A 0x4F
 
 //TODO: fix this part
 //- add specific sprites base sizes
@@ -73,11 +73,12 @@ typedef struct {
 */
 
 
-//SDL_Rect *generate_terrain(int*,float,int);
+//gen.c
 vect *generate_terrain(int*,float,int);
 
-void draw_grid(SDL_Renderer*, vect, SDL_Texture*);
-//void draw(SDL_Renderer*, Var*, vect, SDL_Texture*, SDL_Rect*, int, SDL_Texture*, SDL_Rect*);
+//draw.c
+//void draw_grid(SDL_Renderer*, vect, SDL_Texture*);
+void draw_grid(SDL_Renderer*, vect);
 void draw(SDL_Renderer*, Var*, vect, SDL_Texture*, int, SDL_Texture*, vect*);
 void zoom_rects(int, SDL_Rect*, int, SDL_Rect*);
 
