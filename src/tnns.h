@@ -58,6 +58,7 @@ typedef Tile** Terrain;
 typedef struct {
 	int zoom;
 	int sprite_size;
+	int grid_on;
 } Var;
 
 typedef struct {

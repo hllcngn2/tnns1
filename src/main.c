@@ -59,8 +59,8 @@ if (ac>1) p =atof(av[1]); else p =GEN_DEFAULT_P;
 if (ac>2) offs =atoi(av[2]); else offs =GEN_DEFAULT_OFFS;
 if (offs !=-1) offs *=ASPECT_RATIO;
 //other variables initialization
-int grid_on =0;
-Var var =(Var){ASPECT_RATIO,SPRITE_SIZE};
+//int grid_on =0;
+Var var =(Var){ASPECT_RATIO,SPRITE_SIZE,0};
 Keys keys =(Keys){0,0,0,0,0};
 
 //vect pos =(vect){(WINDOW_WIDTH-16)/2,W}
@@ -80,7 +80,7 @@ while(SDL_PollEvent(&e)){
 if (e.type ==SDL_QUIT) terminate++;
 else if (e.type ==SDL_KEYDOWN) switch(e.key.keysym.sym){
 case K_QUIT: terminate++;	break;
-case K_GRID: grid_on =(!grid_on)?1:0;	break;
+case K_GRID: var.grid_on =(!var.grid_on)?1:0;	break;
 case K_UP:     keys.up =1;	break;
 case K_LEFT:   keys.left =1;	break;
 case K_DOWN:   keys.down =1;	break;
@@ -125,7 +125,7 @@ if (keys.camera){
 //keep in mem only the rects' coord in this system
 // displaying
 draw(renderer, &var, camera, t_char, nb, t_sprite1, t_sprite_v);
-if (grid_on) draw_grid(renderer, camera);
+//if (grid_on) draw_grid(renderer, camera);
 SDL_RenderPresent(renderer);
 }
 
