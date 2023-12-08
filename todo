@@ -1,0 +1,47 @@
+start with the player pos vect
+
+draw.c:
+//- fix the camera
+	//field of view
+//- position & distances are also scaled to the zoom
+//- fix constants
+
+main.c:
+-new game (generate farm terrain)
+-save game
+-load game
+
+-collisions
+
+gen.c:
+//actual probabilities
+//Perlin noise
+//1-2 bushes a tile
+//different sizes of bush
+
+// 2) ordering sprites for display
+
+tnns.h:
+//- add specific sprites base sizes
+fix size/ratio constants
+//TODO: make TERRAIN into a fixed pixel map
+fix terrain constants
+
+structures:
+/*
+typedef struct {
+	SDL_Rect *r_char;
+	SDL_Rect **t_sprite_r;
+	SDL_Texture *t_char, *t_sprite1;
+}mystruct;
+*/
+
+/*
+typedef struct {
+} Tile;
+typedef Tile** Terrain;
+*/
+
+// player
+//first name
+//family name
