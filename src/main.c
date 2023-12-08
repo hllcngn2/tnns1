@@ -22,7 +22,7 @@ SDL_Renderer *renderer =SDL_CreateRenderer(window, -1,
 
 // loading sprites
 //  character
-SDL_Surface *s_char =SDL_LoadBMP("ass/char_16x24-front.bmp");
+SDL_Surface *s_char =SDL_LoadBMP("ass/char_16x24-sprites.bmp");
 SDL_SetColorKey(s_char,SDL_TRUE,SDL_MapRGB(s_char->format,0x6F,0xFF,0x7F));
 SDL_Texture *t_char =SDL_CreateTextureFromSurface(renderer, s_char);
 SDL_FreeSurface(s_char);
@@ -43,7 +43,7 @@ if (ac>1) p =atof(av[1]); else p =GEN_DEFAULT_P;
 if (ac>2) offs =atoi(av[2]); else offs =GEN_DEFAULT_OFFS;
 if (offs !=-1) offs *=ASPECT_RATIO;
 //other variables
-Var var =(Var){ASPECT_RATIO,SPRITE_SIZE,0};
+Var var =(Var){ASPECT_RATIO,SPRITE_SIZE,0,SOUTH};
 Keys keys =(Keys){0,0,0,0,0};
 vect camera =(vect){0,0};
 //vect pos =(vect){(WINDOW_WIDTH-16)/2,W}
@@ -65,10 +65,14 @@ if (e.type ==SDL_QUIT)
 else if (e.type ==SDL_KEYDOWN) switch(e.key.keysym.sym){
 	case K_QUIT: terminate++;	break;
 	case K_GRID: var.grid_on =(!var.grid_on)?1:0;	break;
-	case K_UP:     keys.up =1;	break;
-	case K_LEFT:   keys.left =1;	break;
-	case K_DOWN:   keys.down =1;	break;
-	case K_RIGHT:  keys.right =1;	break;
+	case K_UP:     keys.up =1;
+		if(!keys.camera) var.facing =NORTH;	break;
+	case K_LEFT:   keys.left =1;
+		if(!keys.camera) var.facing =WEST;	break;
+	case K_DOWN:   keys.down =1;
+		if(!keys.camera) var.facing =SOUTH;	break;
+	case K_RIGHT:  keys.right =1;
+		if(!keys.camera) var.facing =EAST;	break;
 	case K_CAMERA: keys.camera =1;
 	//	if (!keys.camera){ keys.up =0; keys.left =0;
 	//		keys.down =0; keys.right =0;}

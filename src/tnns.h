@@ -41,11 +41,17 @@
 #define TERRAIN_HEIGHT SPRITES_HEIGHT
 #define TERRAIN_BORDER 48*ASPECT_RATIO
 
+#define NORTH 0
+#define EAST 1
+#define SOUTH 2
+#define WEST 3
+
 
 typedef struct {
 	int zoom;
 	int sprite_size;
 	int grid_on;
+	int facing;
 } Var;
 typedef struct {
 	int camera;

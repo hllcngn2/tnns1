@@ -1,5 +1,8 @@
 start with the player pos vect
 
+general:
+- bigger terrain
+
 draw.c:
 //- fix the camera
 	//field of view

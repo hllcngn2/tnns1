@@ -51,5 +51,6 @@ for (int i=0; i<nt; i++)
 SDL_Rect r_char =(SDL_Rect){(WINDOW_WIDTH-(16*ASPECT_RATIO))/2,
 		(WINDOW_HEIGHT-(24*ASPECT_RATIO))/2,
 		 16*ASPECT_RATIO,24*ASPECT_RATIO};
-SDL_RenderCopy(renderer, t_char, NULL, &r_char);
+SDL_Rect r_sprite =(SDL_Rect){var->facing*16,0,16,24};
+SDL_RenderCopy(renderer, t_char, &r_sprite, &r_char);
 	return;}
