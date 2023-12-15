@@ -27,10 +27,8 @@ if (ac>2) offs =atoi(av[2]); else offs =GEN_DEFAULT_OFFS;
 if (offs !=-1) offs *=ASPECT_RATIO;
 //other variables
 Ctxt_game* gc =(Ctxt_game*)malloc(sizeof(Ctxt_game));{
-  vect plpos =(vect){TERRAIN_WIDTH/2*SPRITE_SIZE,
-		TERRAIN_HEIGHT/2*SPRITE_SIZE};
-  vect camera =(vect){0,0};
-*gc =(Ctxt_game){SOUTH, plpos, camera};}
+  vect plpos =(vect){TERRAIN_WIDTH/2, TERRAIN_HEIGHT/2};
+*gc =(Ctxt_game){SOUTH, plpos};}
 Keys keys =(Keys){0,0,0,0,0};
 
 // loading sprites
@@ -50,7 +48,8 @@ SDL_Surface *spriteTree =SDL_LoadBMP("ass/tree_40x48.bmp");
 SDL_SetColorKey(spriteTree,SDL_TRUE,SDL_MapRGB(spriteTree->format,0x6F,0xFF,0x7F));
 SDL_Texture *t_spriteTree =SDL_CreateTextureFromSurface(renderer,spriteTree);
 SDL_FreeSurface(spriteTree);
-*dc =(Ctxt_disp){ASPECT_RATIO, 0, t_char, t_sprite1, t_spriteTree};}
+vect camera =(vect){0,0};
+*dc =(Ctxt_disp){ASPECT_RATIO, 0, camera, t_char, t_sprite1, t_spriteTree};}
 
 //terrain generation
 Ctxt_map* mc =(Ctxt_map*)malloc(sizeof(Ctxt_map));
@@ -89,21 +88,21 @@ else if (e.type ==SDL_KEYUP) switch(e.key.keysym.sym){
 	case K_DOWN:   keys.down =0;	break;
 	case K_RIGHT:  keys.right =0;	break;
 	case K_CAMERA: keys.camera =0;
-		gc->camera =(vect){0,0};	break;
+		dc->camera =(vect){0,0};	break;
 		       //camera to center on the character again
 	default:	break;}}
 
 // actions handling
 if (keys.camera){ //camera movement
        //don't move the character with the camera
-	if (keys.up && gc->camera.y>-TERRAIN_BORDER)
-		gc->camera.y-=2*dc->zoom;
-	if (keys.left && gc->camera.x>-TERRAIN_BORDER)
-		gc->camera.x-=2*dc->zoom;
-	if (keys.down && gc->camera.y<TERRAIN_BORDER)
-		gc->camera.y+=2*dc->zoom;
-	if (keys.right && gc->camera.x<TERRAIN_BORDER)
-		gc->camera.x+=2*dc->zoom;}
+	if (keys.up && dc->camera.y>-TERRAIN_BORDER)
+		dc->camera.y-=2*dc->zoom;
+	if (keys.left && dc->camera.x>-TERRAIN_BORDER)
+		dc->camera.x-=2*dc->zoom;
+	if (keys.down && dc->camera.y<TERRAIN_BORDER)
+		dc->camera.y+=2*dc->zoom;
+	if (keys.right && dc->camera.x<TERRAIN_BORDER)
+		dc->camera.x+=2*dc->zoom;}
 else { //normal movement
        //with collision detection
        //+ possibility to move freely at the edges of terrain
@@ -111,9 +110,9 @@ else { //normal movement
 		gc->plpos.y-=1*dc->zoom;
 	if (keys.left && gc->plpos.x>0)
 		gc->plpos.x-=1*dc->zoom;
-	if (keys.down && gc->plpos.y<TERRAIN_HEIGHT*SPRITE_SIZE*dc->zoom)
+	if (keys.down && gc->plpos.y<TERRAIN_HEIGHT)
 		gc->plpos.y+=1*dc->zoom;
-	if (keys.right && gc->plpos.x<TERRAIN_WIDTH*SPRITE_SIZE*dc->zoom)
+	if (keys.right && gc->plpos.x<TERRAIN_WIDTH)
 		gc->plpos.x+=1*dc->zoom;}
 
 // displaying

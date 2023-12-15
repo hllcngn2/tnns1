@@ -3,12 +3,11 @@
 #include "more/struct1.h"//vect
 #include <math.h>//abs
 
+void get_offsets();
 void fill_background_color(SDL_Renderer* renderer);
 void draw_grid(SDL_Renderer* renderer, vect camera);
-void draw_bushes(SDL_Renderer* renderer, vect camera,
-		Ctxt_map* mc, Ctxt_disp* dc);
-void draw_character(SDL_Renderer* renderer, int facing,
-		SDL_Texture* t_char);
+void draw_bushes(SDL_Renderer* renderer, Ctxt_map* mc, Ctxt_disp* dc);
+void draw_character(SDL_Renderer* renderer, int facing, SDL_Texture* t_char);
 
 
 
@@ -17,14 +16,18 @@ void draw(SDL_Renderer* renderer, Ctxt_disp* dc, Ctxt_map* mc, Ctxt_game* gc){
 //camera = offset from plpos
 //calculate upper left corner
 //relative to terrain
+get_offsets();
 
 fill_background_color(renderer);
-if (dc->grid_on) draw_grid(renderer, gc->camera);
-draw_bushes(renderer, gc->camera, mc, dc);
+if (dc->grid_on) draw_grid(renderer, dc->camera);
+draw_bushes(renderer, mc, dc);
 draw_character(renderer, gc->facing, dc->t_char);
 return;}
 
 
+
+void get_offsets(){
+return;}
 
 void fill_background_color(SDL_Renderer* renderer){
 SDL_SetRenderDrawColor(renderer, BG_R,BG_G,BG_B, 0xFF);
@@ -53,9 +56,8 @@ for(; camera.y+y<=TERRAIN_HEIGHT*(SPRITE_SIZE+1) && y<WINDOW_HEIGHT;
 		y+=SPRITE_SIZE+1)
 	SDL_RenderDrawLine(renderer, beg,y, end,y);}	return;}
 
-void draw_bushes(SDL_Renderer* renderer, vect camera,
-		Ctxt_map* mc, Ctxt_disp* dc){
-  SDL_Texture*	t_sprite =dc->t_sprite;
+void draw_bushes(SDL_Renderer* renderer, Ctxt_map* mc, Ctxt_disp* dc){
+  vect		camera =dc->camera;
   int		nt =mc->nt;
   vect*		t_sprite_v =mc->t_sprite_v;
 for (int i=0; i<nt; i++)
@@ -66,7 +68,7 @@ for (int i=0; i<nt; i++)
 	SDL_Rect draw_r =(SDL_Rect){t_sprite_v[i].x -camera.x,
 				t_sprite_v[i].y -camera.y,
 				SPRITE_SIZE,SPRITE_SIZE};
-	SDL_RenderCopy(renderer, t_sprite, NULL, &draw_r);}
+	SDL_RenderCopy(renderer, dc->t_sprite, NULL, &draw_r);}
 return;}
 
 void draw_character(SDL_Renderer* renderer, int facing,
