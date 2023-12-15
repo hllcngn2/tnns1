@@ -45,6 +45,7 @@ if (offs !=-1) offs *=ASPECT_RATIO;
 //other variables
 Var var =(Var){ASPECT_RATIO,SPRITE_SIZE,0,SOUTH};
 Keys keys =(Keys){0,0,0,0,0};
+vect plpos =(vect){TERRAIN_WIDTH/2*SPRITE_SIZE,TERRAIN_HEIGHT/2*SPRITE_SIZE};
 vect camera =(vect){0,0};
 //vect pos =(vect){(WINDOW_WIDTH-16)/2,W}
 //vect plpos =(vect){SPRITE_SIZE*9+8,SPRITE_SIZE*5+4+8*ASPECT_RATIO};
@@ -104,17 +105,17 @@ if (keys.camera){ //camera movement
 else { //normal movement
        //with collision detection
        //+ possibility to move freely at the edges of terrain
-	if (keys.up && camera.y>-TERRAIN_BORDER)
-		camera.y-=1*var.zoom;
-	if (keys.left && camera.x>-TERRAIN_BORDER)
-		camera.x-=1*var.zoom;
-	if (keys.down && camera.y<TERRAIN_BORDER)//TH = 20!
-		camera.y+=1*var.zoom;
-	if (keys.right && camera.x<TERRAIN_BORDER)//to fix
-		camera.x+=1*var.zoom;}
+	if (keys.up && plpos.y>0)
+		plpos.y-=1*var.zoom;
+	if (keys.left && plpos.x>0)
+		plpos.x-=1*var.zoom;
+	if (keys.down && plpos.y<TERRAIN_HEIGHT*SPRITE_SIZE*var.zoom)
+		plpos.y+=1*var.zoom;
+	if (keys.right && plpos.x<TERRAIN_WIDTH*SPRITE_SIZE*var.zoom)
+		plpos.x+=1*var.zoom;}
 
 // displaying
-draw(renderer, &var, camera, t_char, nb, t_sprite1, t_sprite_v);
+draw(renderer, &var, plpos, camera, t_char, nb, t_sprite1, t_sprite_v);
 SDL_RenderPresent(renderer);
 
 }

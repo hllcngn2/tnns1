@@ -63,6 +63,6 @@ typedef struct {
 vect *generate_terrain(int*,float,int);
 
 // draw.c
-void draw(SDL_Renderer*, Var*, vect, SDL_Texture*, int, SDL_Texture*, vect*);
+void draw(SDL_Renderer*, Var*, vect, vect, SDL_Texture*, int, SDL_Texture*, vect*);
 
 #endif
