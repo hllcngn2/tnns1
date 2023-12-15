@@ -48,11 +48,22 @@
 
 
 typedef struct {
-	int zoom;
-	int sprite_size;
-	int grid_on;
 	int facing;
-} Var;
+	vect plpos;
+	vect camera;
+} Ctxt_game;
+typedef struct {
+	int nt;
+	vect* t_sprite_v;
+} Ctxt_map;
+typedef struct {
+	int zoom;
+	int grid_on;
+	SDL_Texture
+		*t_char,
+		*t_sprite,
+		*t_tree;
+} Ctxt_disp;
 typedef struct {
 	int camera;
 	int up,left,down,right;
@@ -63,6 +74,6 @@ typedef struct {
 vect *generate_terrain(int*,float,int);
 
 // draw.c
-void draw(SDL_Renderer*, Var*, vect, vect, SDL_Texture*, int, SDL_Texture*, vect*);
+void draw(SDL_Renderer*, Ctxt_disp*, Ctxt_map*, Ctxt_game*);
 
 #endif

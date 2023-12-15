@@ -6,24 +6,22 @@
 void fill_background_color(SDL_Renderer* renderer);
 void draw_grid(SDL_Renderer* renderer, vect camera);
 void draw_bushes(SDL_Renderer* renderer, vect camera,
-		SDL_Texture* t_sprite, int nt, vect* t_sprite_v);
+		Ctxt_map* mc, Ctxt_disp* dc);
 void draw_character(SDL_Renderer* renderer, int facing,
 		SDL_Texture* t_char);
 
 
 
-void draw(SDL_Renderer* renderer, Var *var, vect plpos, vect camera,
-		SDL_Texture* t_char,
-		int nt, SDL_Texture* t_sprite, vect* t_sprite_v){
+void draw(SDL_Renderer* renderer, Ctxt_disp* dc, Ctxt_map* mc, Ctxt_game* gc){
 //get camera offsets
 //camera = offset from plpos
 //calculate upper left corner
 //relative to terrain
 
 fill_background_color(renderer);
-if (var->grid_on) draw_grid(renderer, camera);
-draw_bushes(renderer, camera, t_sprite, nt, t_sprite_v);
-draw_character(renderer, var->facing, t_char);
+if (dc->grid_on) draw_grid(renderer, gc->camera);
+draw_bushes(renderer, gc->camera, mc, dc);
+draw_character(renderer, gc->facing, dc->t_char);
 return;}
 
 
@@ -56,7 +54,10 @@ for(; camera.y+y<=TERRAIN_HEIGHT*(SPRITE_SIZE+1) && y<WINDOW_HEIGHT;
 	SDL_RenderDrawLine(renderer, beg,y, end,y);}	return;}
 
 void draw_bushes(SDL_Renderer* renderer, vect camera,
-		SDL_Texture* t_sprite, int nt, vect* t_sprite_v){
+		Ctxt_map* mc, Ctxt_disp* dc){
+  SDL_Texture*	t_sprite =dc->t_sprite;
+  int		nt =mc->nt;
+  vect*		t_sprite_v =mc->t_sprite_v;
 for (int i=0; i<nt; i++)
 	if (t_sprite_v[i].x <camera.x+WINDOW_WIDTH
 		&& t_sprite_v[i].x >=camera.x-SPRITE_SIZE
@@ -66,7 +67,7 @@ for (int i=0; i<nt; i++)
 				t_sprite_v[i].y -camera.y,
 				SPRITE_SIZE,SPRITE_SIZE};
 	SDL_RenderCopy(renderer, t_sprite, NULL, &draw_r);}
-	return;}
+return;}
 
 void draw_character(SDL_Renderer* renderer, int facing,
 		SDL_Texture* t_char){

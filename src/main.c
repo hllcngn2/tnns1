@@ -20,7 +20,21 @@ SDL_Window *window =SDL_CreateWindow("tnns",
 SDL_Renderer *renderer =SDL_CreateRenderer(window, -1,
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
+//inline arguments parsing
+float p; int offs;
+if (ac>1) p =atof(av[1]); else p =GEN_DEFAULT_P;
+if (ac>2) offs =atoi(av[2]); else offs =GEN_DEFAULT_OFFS;
+if (offs !=-1) offs *=ASPECT_RATIO;
+//other variables
+Ctxt_game* gc =(Ctxt_game*)malloc(sizeof(Ctxt_game));{
+  vect plpos =(vect){TERRAIN_WIDTH/2*SPRITE_SIZE,
+		TERRAIN_HEIGHT/2*SPRITE_SIZE};
+  vect camera =(vect){0,0};
+*gc =(Ctxt_game){SOUTH, plpos, camera};}
+Keys keys =(Keys){0,0,0,0,0};
+
 // loading sprites
+Ctxt_disp* dc =(Ctxt_disp*)malloc(sizeof(Ctxt_disp));{
 //  character
 SDL_Surface *s_char =SDL_LoadBMP("ass/char_16x24-sprites.bmp");
 SDL_SetColorKey(s_char,SDL_TRUE,SDL_MapRGB(s_char->format,0x6F,0xFF,0x7F));
@@ -36,23 +50,11 @@ SDL_Surface *spriteTree =SDL_LoadBMP("ass/tree_40x48.bmp");
 SDL_SetColorKey(spriteTree,SDL_TRUE,SDL_MapRGB(spriteTree->format,0x6F,0xFF,0x7F));
 SDL_Texture *t_spriteTree =SDL_CreateTextureFromSurface(renderer,spriteTree);
 SDL_FreeSurface(spriteTree);
-
-//inline arguments parsing
-float p; int offs;
-if (ac>1) p =atof(av[1]); else p =GEN_DEFAULT_P;
-if (ac>2) offs =atoi(av[2]); else offs =GEN_DEFAULT_OFFS;
-if (offs !=-1) offs *=ASPECT_RATIO;
-//other variables
-Var var =(Var){ASPECT_RATIO,SPRITE_SIZE,0,SOUTH};
-Keys keys =(Keys){0,0,0,0,0};
-vect plpos =(vect){TERRAIN_WIDTH/2*SPRITE_SIZE,TERRAIN_HEIGHT/2*SPRITE_SIZE};
-vect camera =(vect){0,0};
-//vect pos =(vect){(WINDOW_WIDTH-16)/2,W}
-//vect plpos =(vect){SPRITE_SIZE*9+8,SPRITE_SIZE*5+4+8*ASPECT_RATIO};
+*dc =(Ctxt_disp){ASPECT_RATIO, 0, t_char, t_sprite1, t_spriteTree};}
 
 //terrain generation
-int nb =0;
-vect *t_sprite_v =generate_terrain(&nb, p, offs); //<
+Ctxt_map* mc =(Ctxt_map*)malloc(sizeof(Ctxt_map));
+mc->t_sprite_v =generate_terrain(&(mc->nt), p, offs);
 
 
 int terminate =0;
@@ -65,21 +67,21 @@ if (e.type ==SDL_QUIT)
 	terminate++;
 else if (e.type ==SDL_KEYDOWN) switch(e.key.keysym.sym){
 	case K_QUIT: terminate++;	break;
-	case K_GRID: var.grid_on =(!var.grid_on)?1:0;	break;
+	case K_GRID: dc->grid_on =(!dc->grid_on)?1:0;	break;
 	case K_UP:     keys.up =1;
-		if(!keys.camera) var.facing =NORTH;	break;
+		if(!keys.camera) gc->facing =NORTH;	break;
 	case K_LEFT:   keys.left =1;
-		if(!keys.camera) var.facing =WEST;	break;
+		if(!keys.camera) gc->facing =WEST;	break;
 	case K_DOWN:   keys.down =1;
-		if(!keys.camera) var.facing =SOUTH;	break;
+		if(!keys.camera) gc->facing =SOUTH;	break;
 	case K_RIGHT:  keys.right =1;
-		if(!keys.camera) var.facing =EAST;	break;
+		if(!keys.camera) gc->facing =EAST;	break;
 	case K_CAMERA: keys.camera =1;
 	//	if (!keys.camera){ keys.up =0; keys.left =0;
 	//		keys.down =0; keys.right =0;}
 		break;
-	case K_ZOOMIN:	if (var.zoom>1) var.zoom--; break;
-	case K_ZOOMOUT:	if (var.zoom<8) var.zoom++; break;
+	case K_ZOOMIN:	if (dc->zoom>1) dc->zoom--; break;
+	case K_ZOOMOUT:	if (dc->zoom<8) dc->zoom++; break;
 	default:	break;}
 else if (e.type ==SDL_KEYUP) switch(e.key.keysym.sym){
 	case K_UP:     keys.up =0;	break;
@@ -87,43 +89,46 @@ else if (e.type ==SDL_KEYUP) switch(e.key.keysym.sym){
 	case K_DOWN:   keys.down =0;	break;
 	case K_RIGHT:  keys.right =0;	break;
 	case K_CAMERA: keys.camera =0;
-		camera =(vect){0,0};	break;
+		gc->camera =(vect){0,0};	break;
 		       //camera to center on the character again
 	default:	break;}}
 
 // actions handling
 if (keys.camera){ //camera movement
        //don't move the character with the camera
-	if (keys.up && camera.y>-TERRAIN_BORDER)
-		camera.y-=2*var.zoom;
-	if (keys.left && camera.x>-TERRAIN_BORDER)
-		camera.x-=2*var.zoom;
-	if (keys.down && camera.y<TERRAIN_BORDER)//TH = 20!
-		camera.y+=2*var.zoom;
-	if (keys.right && camera.x<TERRAIN_BORDER)//to fix
-		camera.x+=2*var.zoom;}
+	if (keys.up && gc->camera.y>-TERRAIN_BORDER)
+		gc->camera.y-=2*dc->zoom;
+	if (keys.left && gc->camera.x>-TERRAIN_BORDER)
+		gc->camera.x-=2*dc->zoom;
+	if (keys.down && gc->camera.y<TERRAIN_BORDER)
+		gc->camera.y+=2*dc->zoom;
+	if (keys.right && gc->camera.x<TERRAIN_BORDER)
+		gc->camera.x+=2*dc->zoom;}
 else { //normal movement
        //with collision detection
        //+ possibility to move freely at the edges of terrain
-	if (keys.up && plpos.y>0)
-		plpos.y-=1*var.zoom;
-	if (keys.left && plpos.x>0)
-		plpos.x-=1*var.zoom;
-	if (keys.down && plpos.y<TERRAIN_HEIGHT*SPRITE_SIZE*var.zoom)
-		plpos.y+=1*var.zoom;
-	if (keys.right && plpos.x<TERRAIN_WIDTH*SPRITE_SIZE*var.zoom)
-		plpos.x+=1*var.zoom;}
+	if (keys.up && gc->plpos.y>0)
+		gc->plpos.y-=1*dc->zoom;
+	if (keys.left && gc->plpos.x>0)
+		gc->plpos.x-=1*dc->zoom;
+	if (keys.down && gc->plpos.y<TERRAIN_HEIGHT*SPRITE_SIZE*dc->zoom)
+		gc->plpos.y+=1*dc->zoom;
+	if (keys.right && gc->plpos.x<TERRAIN_WIDTH*SPRITE_SIZE*dc->zoom)
+		gc->plpos.x+=1*dc->zoom;}
 
 // displaying
-draw(renderer, &var, plpos, camera, t_char, nb, t_sprite1, t_sprite_v);
+draw(renderer, dc, mc, gc);
 SDL_RenderPresent(renderer);
 
 }
 
-free(t_sprite_v);
-SDL_DestroyTexture(t_spriteTree);
-SDL_DestroyTexture(t_sprite1);
-SDL_DestroyTexture(t_char);
+free(gc);
+free(mc->t_sprite_v);
+free(mc);
+SDL_DestroyTexture(dc->t_tree);
+SDL_DestroyTexture(dc->t_sprite);
+SDL_DestroyTexture(dc->t_char);
+free(dc);
 SDL_DestroyRenderer(renderer);
 SDL_DestroyWindow(window);
 SDL_Quit();	return 0;}
