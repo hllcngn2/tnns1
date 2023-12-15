@@ -3,10 +3,11 @@
 #include "more/struct1.h"//vect
 #include <math.h>//abs
 
-void get_offsets();
+void get_offsets(vect camera, vect plpos, vect* up_left);
 void fill_background_color(SDL_Renderer* renderer);
 void draw_grid(SDL_Renderer* renderer, vect camera);
-void draw_bushes(SDL_Renderer* renderer, Ctxt_map* mc, Ctxt_disp* dc);
+void draw_bushes(SDL_Renderer* renderer, Ctxt_map* mc, Ctxt_disp* dc,
+		vect up_right);
 void draw_character(SDL_Renderer* renderer, int facing, SDL_Texture* t_char);
 
 
@@ -16,17 +17,20 @@ void draw(SDL_Renderer* renderer, Ctxt_disp* dc, Ctxt_map* mc, Ctxt_game* gc){
 //camera = offset from plpos
 //calculate upper left corner
 //relative to terrain
-get_offsets();
+vect up_right;
+get_offsets(dc->camera, gc->plpos, &up_right);
 
 fill_background_color(renderer);
-if (dc->grid_on) draw_grid(renderer, dc->camera);
-draw_bushes(renderer, mc, dc);
+//if (dc->grid_on) draw_grid(renderer, dc->camera);
+draw_bushes(renderer, mc, dc, up_right);
 draw_character(renderer, gc->facing, dc->t_char);
 return;}
 
 
 
-void get_offsets(){
+void get_offsets(vect camera, vect plpos, vect* up_left){
+*up_left =(vect){plpos.x+camera.x-WINDOW_WIDTH/2,
+			plpos.y+camera.y-WINDOW_HEIGHT/2};
 return;}
 
 void fill_background_color(SDL_Renderer* renderer){
@@ -56,17 +60,18 @@ for(; camera.y+y<=TERRAIN_HEIGHT*(SPRITE_SIZE+1) && y<WINDOW_HEIGHT;
 		y+=SPRITE_SIZE+1)
 	SDL_RenderDrawLine(renderer, beg,y, end,y);}	return;}
 
-void draw_bushes(SDL_Renderer* renderer, Ctxt_map* mc, Ctxt_disp* dc){
-  vect		camera =dc->camera;
+void draw_bushes(SDL_Renderer* renderer, Ctxt_map* mc, Ctxt_disp* dc,
+			vect up_right){
+//vect		camera =dc->camera;
   int		nt =mc->nt;
   vect*		t_sprite_v =mc->t_sprite_v;
 for (int i=0; i<nt; i++)
-	if (t_sprite_v[i].x <camera.x+WINDOW_WIDTH
-		&& t_sprite_v[i].x >=camera.x-SPRITE_SIZE
-		&& t_sprite_v[i].y <camera.y+WINDOW_HEIGHT
-		&& t_sprite_v[i].y >=camera.y-SPRITE_SIZE){
-	SDL_Rect draw_r =(SDL_Rect){t_sprite_v[i].x -camera.x,
-				t_sprite_v[i].y -camera.y,
+	if (t_sprite_v[i].x <up_right.x+WINDOW_WIDTH
+		&& t_sprite_v[i].x >=up_right.x-SPRITE_SIZE
+		&& t_sprite_v[i].y <up_right.y+WINDOW_HEIGHT
+		&& t_sprite_v[i].y >=up_right.y-SPRITE_SIZE){
+	SDL_Rect draw_r =(SDL_Rect){t_sprite_v[i].x -up_right.x,
+				t_sprite_v[i].y -up_right.y,
 				SPRITE_SIZE,SPRITE_SIZE};
 	SDL_RenderCopy(renderer, dc->t_sprite, NULL, &draw_r);}
 return;}
