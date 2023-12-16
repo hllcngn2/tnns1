@@ -3,34 +3,28 @@
 #include "more/struct1.h"//vect
 #include <math.h>//abs
 
-void get_offsets(vect camera, vect plpos, vect* up_left, vect* scr_offs);
+void get_offsets(vect camera, vect plpos, vect* up_left);
 void fill_background_color(SDL_Renderer* renderer);
 void draw_grid(SDL_Renderer* renderer, vect camera);
 void draw_bushes(SDL_Renderer* renderer, Ctxt_map* mc, Ctxt_disp* dc,
 		vect up_right);
-void draw_character(SDL_Renderer* renderer, int facing, SDL_Texture* t_char);
+void draw_character(SDL_Renderer* renderer, vect up_left, vect plpos,
+		int facing, SDL_Texture* t_char);
 
 
 
 void draw(SDL_Renderer* renderer, Ctxt_disp* dc, Ctxt_map* mc, Ctxt_game* gc){
-//get camera offsets
-//camera = offset from plpos
-//calculate upper left corner
-//relative to terrain
-vect up_right;
-vect scr_offs;
-get_offsets(dc->camera, gc->plpos, &up_right, &scr_offs);
-
+vect up_left; get_offsets(dc->camera, gc->plpos, &up_left);
 fill_background_color(renderer);
 //if (dc->grid_on) draw_grid(renderer, dc->camera);
-draw_bushes(renderer, mc, dc, up_right);
-draw_character(renderer, gc->facing, dc->t_char);
+draw_bushes(renderer, mc, dc, up_left);
+draw_character(renderer, up_left, gc->plpos, gc->facing, dc->t_char);
 return;}
 
 
 
 void get_offsets(vect camera, vect plpos,
-		vect* up_left, vect* scr_offs){
+		vect* up_left){
 int x =plpos.x+camera.x-(WINDOW_WIDTH-16*ASPECT_RATIO)/2;
 int y =plpos.y+camera.y-(WINDOW_HEIGHT-24*ASPECT_RATIO)/2;
 if (x<-TERRAIN_BORDER) x =-TERRAIN_BORDER;
@@ -84,10 +78,10 @@ for (int i=0; i<nt; i++)
 	SDL_RenderCopy(renderer, dc->t_sprite, NULL, &draw_r);}
 return;}
 
-void draw_character(SDL_Renderer* renderer, int facing,
-		SDL_Texture* t_char){
+void draw_character(SDL_Renderer* renderer, vect up_left, vect plpos,
+		int facing, SDL_Texture* t_char){
 SDL_Rect r_sprite =(SDL_Rect){facing*16,0,16,24};
-SDL_Rect r_char =(SDL_Rect){(WINDOW_WIDTH-16*ASPECT_RATIO)/2,
-			(WINDOW_HEIGHT-24*ASPECT_RATIO)/2,
+SDL_Rect r_char =(SDL_Rect){	plpos.x-up_left.x,
+				plpos.y-up_left.y,
 			16*ASPECT_RATIO,24*ASPECT_RATIO};
 SDL_RenderCopy(renderer, t_char, &r_sprite, &r_char);	return;}

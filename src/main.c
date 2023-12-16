@@ -76,10 +76,7 @@ else if (e.type ==SDL_KEYDOWN) switch(e.key.keysym.sym){
 		if(!keys.camera) gc->facing =SOUTH;	break;
 	case K_RIGHT:  keys.right =1;
 		if(!keys.camera) gc->facing =EAST;	break;
-	case K_CAMERA: keys.camera =1;
-	//	if (!keys.camera){ keys.up =0; keys.left =0;
-	//		keys.down =0; keys.right =0;}
-		break;
+	case K_CAMERA: keys.camera =1;	break;
 	case K_ZOOMIN:	if (dc->zoom>1) dc->zoom--; break;
 	case K_ZOOMOUT:	if (dc->zoom<8) dc->zoom++; break;
 	default:	break;}
@@ -90,13 +87,10 @@ else if (e.type ==SDL_KEYUP) switch(e.key.keysym.sym){
 	case K_RIGHT:  keys.right =0;	break;
 	case K_CAMERA: keys.camera =0;
 		dc->camera =(vect){0,0};	break;
-		       //camera to center on the character again
 	default:	break;}}
 
 // actions handling
 if (keys.camera){ //camera movement
-       //don't move the character with the camera
-       // use get_offsets here
 	if(keys.up &&
 		gc->plpos.y+dc->camera.y-(WINDOW_HEIGHT-16*ASPECT_RATIO)/2
 			>-TERRAIN_BORDER)
@@ -115,7 +109,6 @@ if (keys.camera){ //camera movement
 		dc->camera.x+=2*dc->zoom;}
 else { //normal movement
        //with collision detection
-       //+ possibility to move freely at the edges of terrain
 	if (keys.up && gc->plpos.y>-8*ASPECT_RATIO)
 		gc->plpos.y-=1*dc->zoom;
 	if (keys.left && gc->plpos.x>0)
