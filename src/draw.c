@@ -3,7 +3,7 @@
 #include "more/struct1.h"//vect
 #include <math.h>//abs
 
-void get_offsets(vect camera, vect plpos, vect* up_left);
+void get_offsets(vect camera, vect plpos, vect* up_left, vect* scr_offs);
 void fill_background_color(SDL_Renderer* renderer);
 void draw_grid(SDL_Renderer* renderer, vect camera);
 void draw_bushes(SDL_Renderer* renderer, Ctxt_map* mc, Ctxt_disp* dc,
@@ -18,7 +18,8 @@ void draw(SDL_Renderer* renderer, Ctxt_disp* dc, Ctxt_map* mc, Ctxt_game* gc){
 //calculate upper left corner
 //relative to terrain
 vect up_right;
-get_offsets(dc->camera, gc->plpos, &up_right);
+vect scr_offs;
+get_offsets(dc->camera, gc->plpos, &up_right, &scr_offs);
 
 fill_background_color(renderer);
 //if (dc->grid_on) draw_grid(renderer, dc->camera);
@@ -28,10 +29,17 @@ return;}
 
 
 
-void get_offsets(vect camera, vect plpos, vect* up_left){
-*up_left =(vect){plpos.x+camera.x-WINDOW_WIDTH/2,
-			plpos.y+camera.y-WINDOW_HEIGHT/2};
-return;}
+void get_offsets(vect camera, vect plpos,
+		vect* up_left, vect* scr_offs){
+int x =plpos.x+camera.x-(WINDOW_WIDTH-16*ASPECT_RATIO)/2;
+int y =plpos.y+camera.y-(WINDOW_HEIGHT-24*ASPECT_RATIO)/2;
+if (x<-TERRAIN_BORDER) x =-TERRAIN_BORDER;
+else if (x+WINDOW_WIDTH>TERRAIN_WIDTH+TERRAIN_BORDER)
+	x =TERRAIN_WIDTH+TERRAIN_BORDER-WINDOW_WIDTH;
+if (y<-TERRAIN_BORDER) y =-TERRAIN_BORDER;
+else if (y+WINDOW_HEIGHT>TERRAIN_HEIGHT+TERRAIN_BORDER)
+	y =TERRAIN_HEIGHT+TERRAIN_BORDER-WINDOW_HEIGHT;
+*up_left =(vect){x,y};	return;}
 
 void fill_background_color(SDL_Renderer* renderer){
 SDL_SetRenderDrawColor(renderer, BG_R,BG_G,BG_B, 0xFF);
@@ -79,7 +87,7 @@ return;}
 void draw_character(SDL_Renderer* renderer, int facing,
 		SDL_Texture* t_char){
 SDL_Rect r_sprite =(SDL_Rect){facing*16,0,16,24};
-SDL_Rect r_char =(SDL_Rect){(WINDOW_WIDTH-(16*ASPECT_RATIO))/2,
-		(WINDOW_HEIGHT-(24*ASPECT_RATIO))/2,
-		 16*ASPECT_RATIO,24*ASPECT_RATIO};
+SDL_Rect r_char =(SDL_Rect){(WINDOW_WIDTH-16*ASPECT_RATIO)/2,
+			(WINDOW_HEIGHT-24*ASPECT_RATIO)/2,
+			16*ASPECT_RATIO,24*ASPECT_RATIO};
 SDL_RenderCopy(renderer, t_char, &r_sprite, &r_char);	return;}

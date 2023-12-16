@@ -27,7 +27,8 @@ if (ac>2) offs =atoi(av[2]); else offs =GEN_DEFAULT_OFFS;
 if (offs !=-1) offs *=ASPECT_RATIO;
 //other variables
 Ctxt_game* gc =(Ctxt_game*)malloc(sizeof(Ctxt_game));{
-  vect plpos =(vect){TERRAIN_WIDTH/2, TERRAIN_HEIGHT/2};
+  vect plpos =(vect){(TERRAIN_WIDTH-16*ASPECT_RATIO)/2,
+	 		 (TERRAIN_HEIGHT-24*ASPECT_RATIO)/2};
 *gc =(Ctxt_game){SOUTH, plpos};}
 Keys keys =(Keys){0,0,0,0,0};
 
@@ -95,24 +96,33 @@ else if (e.type ==SDL_KEYUP) switch(e.key.keysym.sym){
 // actions handling
 if (keys.camera){ //camera movement
        //don't move the character with the camera
-	if (keys.up && dc->camera.y>-TERRAIN_BORDER)
+       // use get_offsets here
+	if(keys.up &&
+		gc->plpos.y+dc->camera.y-(WINDOW_HEIGHT-16*ASPECT_RATIO)/2
+			>-TERRAIN_BORDER)
 		dc->camera.y-=2*dc->zoom;
-	if (keys.left && dc->camera.x>-TERRAIN_BORDER)
+	if(keys.left &&
+		gc->plpos.x+dc->camera.x-(WINDOW_WIDTH-16*ASPECT_RATIO)/2
+			>-TERRAIN_BORDER)
 		dc->camera.x-=2*dc->zoom;
-	if (keys.down && dc->camera.y<TERRAIN_BORDER)
+	if(keys.down &&
+		gc->plpos.y+dc->camera.y-(WINDOW_HEIGHT-16*ASPECT_RATIO)/2
+			<TERRAIN_HEIGHT+TERRAIN_BORDER-WINDOW_HEIGHT)
 		dc->camera.y+=2*dc->zoom;
-	if (keys.right && dc->camera.x<TERRAIN_BORDER)
+	if(keys.right &&
+		gc->plpos.x+dc->camera.x-(WINDOW_WIDTH-16*ASPECT_RATIO)/2
+			<TERRAIN_WIDTH+TERRAIN_BORDER-WINDOW_WIDTH)
 		dc->camera.x+=2*dc->zoom;}
 else { //normal movement
        //with collision detection
        //+ possibility to move freely at the edges of terrain
-	if (keys.up && gc->plpos.y>0)
+	if (keys.up && gc->plpos.y>-8*ASPECT_RATIO)
 		gc->plpos.y-=1*dc->zoom;
 	if (keys.left && gc->plpos.x>0)
 		gc->plpos.x-=1*dc->zoom;
-	if (keys.down && gc->plpos.y<TERRAIN_HEIGHT)
+	if (keys.down && gc->plpos.y<TERRAIN_HEIGHT-24*ASPECT_RATIO-1)
 		gc->plpos.y+=1*dc->zoom;
-	if (keys.right && gc->plpos.x<TERRAIN_WIDTH)
+	if (keys.right && gc->plpos.x<TERRAIN_WIDTH-16*ASPECT_RATIO-1)
 		gc->plpos.x+=1*dc->zoom;}
 
 // displaying
