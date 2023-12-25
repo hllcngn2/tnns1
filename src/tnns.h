@@ -81,6 +81,5 @@ vect *generate_terrain(int*,float,int);
 
 // draw.c
 void draw(SDL_Renderer*, Ctxt_disp*, Ctxt_map*, Ctxt_game*);
-void get_offsets(vect camera, vect plpos, vect* up_left);
 
 #endif

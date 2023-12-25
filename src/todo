@@ -1,7 +1,8 @@
+start with the zoom
+use that aspect ratio only at the moment of drawing
 
 draw.c:
-//- fix the camera
-	//field of view
+//field of view
 //- position & distances are also scaled to the zoom
 //- fix constants
 
@@ -13,6 +14,7 @@ main.c:
 -collisions
 
 gen.c:
+different gen options:
 //actual probabilities
 //Perlin noise
 //1-2 bushes a tile
@@ -22,14 +24,13 @@ gen.c:
 
 tnns.h:
 //- add specific sprites base sizes
+//or find an other solution
 fix size/ratio constants
 
 structures:
-/*
 typedef struct {
 } Tile;
 typedef Tile** Terrain;
-*/
 
 // player
 //first name
