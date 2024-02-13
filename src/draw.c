@@ -19,7 +19,7 @@ fill_background_color(renderer);
 vect up_left =get_camera_offset(dc->camera, gc->plpos);
 if (dc->grid_on) draw_grid(renderer, up_left);
 draw_bushes(renderer, mc, dc, up_left);
-draw_character(renderer, up_left, gc->plpos, gc->facing, dc->t_char);
+draw_character(renderer, up_left, gc->plpos, gc->facing, dc->tex[CHARACTER]);
 return;}
 
 
@@ -81,7 +81,7 @@ for (int i=0; i<nt; i++)
 	SDL_Rect draw_r =(SDL_Rect){t_sprite_v[i].x -up_left.x,
 				t_sprite_v[i].y -up_left.y,
 				SPRITE_SIZE,SPRITE_SIZE};
-	SDL_RenderCopy(renderer, dc->t_sprite, NULL, &draw_r);}
+	SDL_RenderCopy(renderer, dc->tex[BUSH16], NULL, &draw_r);}
 	return;}
 
 

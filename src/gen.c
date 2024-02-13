@@ -1,6 +1,3 @@
-#include "SDL2/SDL.h"
-#include <stdlib.h>//malloc
-#include <math.h>//abs
 #include "tnns.h"
 
 vect *generate_terrain(int *nb, float p,int offs){
