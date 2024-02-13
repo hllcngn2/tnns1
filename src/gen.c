@@ -2,8 +2,6 @@
 #include <stdlib.h>//malloc
 #include <math.h>//abs
 #include "tnns.h"
-#include "more/struct1.h"
-#include "more/rngbrush.h"
 
 vect *generate_terrain(int *nb, float p,int offs){
 unsigned int n =SPRITES_WIDTH*SPRITES_HEIGHT*p;
@@ -12,14 +10,14 @@ vect *ter =(vect*)malloc(sizeof(vect)*n);
 switch(offs){
 case -1: // random
 for (int i=0; i<n; i++)
-	ter[i] =(vect){rn(TERRAIN_WIDTH-SPRITE_SIZE),
-			rn(TERRAIN_HEIGHT-SPRITE_SIZE)};
+	ter[i] =(vect){rand()%(TERRAIN_WIDTH-SPRITE_SIZE),
+			rand()%(TERRAIN_HEIGHT-SPRITE_SIZE)};
 	break;
 default: // on the grid with an offset
 for (int i=0; i<n; i++){
-	int i1 =rn(SPRITES_WIDTH), i2 =rn(SPRITES_HEIGHT);
-	ter[i] =(vect){SPRITE_SIZE*i1 +rr(-(offs),offs),
-		SPRITE_SIZE*i2 +rr(-(offs),offs)};}
+	int i1 =rand()%(SPRITES_WIDTH), i2 =rand()%(SPRITES_HEIGHT);
+	ter[i] =(vect){SPRITE_SIZE*i1 +rand()%(offs*2)-offs,
+		SPRITE_SIZE*i2 +rand()%(offs*2)-offs};}
 	break;}
 
 // sorting the array

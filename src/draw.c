@@ -1,6 +1,5 @@
 #include "SDL2/SDL.h"
 #include "tnns.h"
-#include "more/struct1.h"//vect
 #include <math.h>//abs
 
 vect get_camera_offset(vect camera, vect plpos);

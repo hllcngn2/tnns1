@@ -1,7 +1,6 @@
 #ifndef TNNS_H
 #define TNNS_H
 #include "SDL2/SDL.h"
-#include "more/struct1.h"//vect
 
 //default world generation
 #define GEN_DEFAULT_P 0.6
@@ -51,6 +50,10 @@
 #define EAST 1
 #define SOUTH 2
 #define WEST 3
+
+
+typedef struct{	int x,y;	}vect;
+typedef struct{	int x,y,w,h;	}rect;
 
 
 typedef struct {

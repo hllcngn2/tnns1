@@ -1,16 +1,15 @@
 #include "SDL2/SDL.h"
 #include "tnns.h"
-#include "more/rngbrush.h"//rng_init
 #include <stdlib.h>//free,atoi.f
 #include <string.h>//strcmp
-#include "more/struct1.h"//vect
+#include <time.h>
 
 #ifdef main//avoid WinMain error
 #undef main//on windows
 #endif
 int main(int ac, char **av){
 //RNG init
-rng_init();
+srand(time(NULL));
 //SDL init
 SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE);
 SDL_Window *window =SDL_CreateWindow("tnns",
