@@ -17,7 +17,7 @@
 #define K_LEFT		SDLK_a
 #define K_DOWN		SDLK_s
 #define K_RIGHT		SDLK_d
-#define K_QUIT		SDLK_0
+#define K_QUIT		SDLK_EQUALS
 #define K_GRID		SDLK_g
 #define K_CAMERA	SDLK_LSHIFT
 #define K_TURNCAMERA	SDLK_BACKSLASH
@@ -93,5 +93,7 @@ void draw(SDL_Renderer*, Ctxt_disp*, Ctxt_map*, Ctxt_game*);
 // logic.c
 void movement_keydown(int sym, Keys* keys, Ctxt_game* gc);
 void movement_keyup(int sym, Keys* keys, Ctxt_game* gc);
+void player_movement(Keys* keys, Ctxt_game* gc, Ctxt_disp* dc);
+void camera_movement(Keys* keys, Ctxt_game* gc, Ctxt_disp* dc);
 
 #endif

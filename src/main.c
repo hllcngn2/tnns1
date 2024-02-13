@@ -54,7 +54,7 @@ if (ac>2) offs =atoi(av[2]);	else offs =GEN_DEFAULT_OFFS;
 if (offs !=-1) offs *=ASPECT_RATIO;
 //other variables
 Keys keys =(Keys){0,0,0,0,0};
-//context
+//game context
 Ctxt_game* gc =malloc(sizeof(Ctxt_game));
 { vect plpos =(vect){(TERRAIN_WIDTH-16*ASPECT_RATIO)/2,
 	 	     (TERRAIN_HEIGHT-24*ASPECT_RATIO)/2};
@@ -78,56 +78,36 @@ while(!terminate){
 while(SDL_PollEvent(&e)){
 if (e.type ==SDL_QUIT)
 	terminate++;
+
 else if (e.type ==SDL_KEYDOWN) switch(e.key.keysym.sym){
 	case K_QUIT: terminate++;	break;
+
 	case K_GRID: dc->grid_on =(!dc->grid_on)?1:0;	break;
 	case K_CAMERA: keys.camera =1;	break;
 	case K_ZOOMIN:	if (dc->zoom>1) dc->zoom--;	break;
 	case K_ZOOMOUT:	if (dc->zoom<8) dc->zoom++;	break;
+
 	case K_UP:
 	case K_LEFT:
 	case K_DOWN:
 	case K_RIGHT:
 		movement_keydown(e.key.keysym.sym,&keys,gc); break;
 	default:			break;}
+
 else if (e.type ==SDL_KEYUP) switch(e.key.keysym.sym){
 	case K_CAMERA: keys.camera =0;
 		dc->camera =(vect){0,0};	break;
+
 	case K_UP:
 	case K_LEFT:
 	case K_DOWN:
 	case K_RIGHT:
-		 movement_keyup(e.key.keysym.sym,&keys,gc); break;
-	default:	break;}}
+		 movement_keyup(e.key.keysym.sym,&keys,gc);  break;
+	default:			break;}}
 
-// actions handling
-if (keys.camera){ //camera movement
-	if(keys.up &&
-		gc->plpos.y+dc->camera.y-(WINDOW_HEIGHT-16*ASPECT_RATIO)/2
-			>-TERRAIN_BORDER)
-		dc->camera.y-=2*dc->zoom;
-	if(keys.left &&
-		gc->plpos.x+dc->camera.x-(WINDOW_WIDTH-16*ASPECT_RATIO)/2
-			>-TERRAIN_BORDER)
-		dc->camera.x-=2*dc->zoom;
-	if(keys.down &&
-		gc->plpos.y+dc->camera.y-(WINDOW_HEIGHT-16*ASPECT_RATIO)/2
-			<TERRAIN_HEIGHT+TERRAIN_BORDER-WINDOW_HEIGHT)
-		dc->camera.y+=2*dc->zoom;
-	if(keys.right &&
-		gc->plpos.x+dc->camera.x-(WINDOW_WIDTH-16*ASPECT_RATIO)/2
-			<TERRAIN_WIDTH+TERRAIN_BORDER-WINDOW_WIDTH)
-		dc->camera.x+=2*dc->zoom;}
-else { //normal movement
-       //with collision detection
-	if (keys.up && gc->plpos.y>-8*ASPECT_RATIO)
-		gc->plpos.y-=1*dc->zoom;
-	if (keys.left && gc->plpos.x>0)
-		gc->plpos.x-=1*dc->zoom;
-	if (keys.down && gc->plpos.y<TERRAIN_HEIGHT-24*ASPECT_RATIO-1)
-		gc->plpos.y+=1*dc->zoom;
-	if (keys.right && gc->plpos.x<TERRAIN_WIDTH-16*ASPECT_RATIO-1)
-		gc->plpos.x+=1*dc->zoom;}
+// updates
+if (keys.camera) camera_movement(&keys,gc,dc);
+else		 player_movement(&keys,gc,dc);
 
 // displaying
 draw(renderer, dc, mc, gc);
