@@ -64,7 +64,7 @@ Direction facing =South;
 
 //terrain generation
 Ctxt_map* mc =malloc(sizeof(Ctxt_map));
-mc->t_sprite_v =generate_terrain(&(mc->nt), p, offs);
+generate_terrain(mc, p, offs);
 
 
 

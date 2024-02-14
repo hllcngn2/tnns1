@@ -63,6 +63,12 @@ typedef enum{	North,East,South,West	} Direction;
 typedef struct{	int x,y;	}vect;
 typedef struct{	int x,y,w,h;	}rect;
 
+typedef struct{	int h,w;
+		SDL_Texture* tex;	}Texture;
+typedef struct Instance{ int x,y;
+		Texture* tex;
+		struct Instance *previous,*next;	}Instance;
+
 //context structs
 typedef struct {
 		int zoom;
@@ -74,7 +80,8 @@ typedef struct {
 		vect plpos;		} Ctxt_game;
 typedef struct {
 		int nt;
-		vect* t_sprite_v;	} Ctxt_map;
+		vect* t_sprite_v;
+		int* sprite_id;		} Ctxt_map;
 
 //other structures
 typedef struct {
@@ -85,7 +92,7 @@ typedef struct {
 
 
 // gen.c
-vect *generate_terrain(int*,float,int);
+void generate_terrain(Ctxt_map* mc, float p,int offs);
 
 // draw.c
 void draw(SDL_Renderer*, Ctxt_disp*, Ctxt_map*, Ctxt_game*);

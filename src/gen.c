@@ -1,9 +1,10 @@
 #include "tnns.h"
 
-vect *generate_terrain(int *nb, float p,int offs){
+void generate_terrain(Ctxt_map* mc, float p,int offs){
 unsigned int n =SPRITES_WIDTH*SPRITES_HEIGHT*p;
 
-vect *ter =(vect*)malloc(sizeof(vect)*n);
+vect* ter =malloc(sizeof(vect)*n);
+int*  id  =malloc(sizeof(int)*n);
 switch(offs){
 case -1: // random
 for (int i=0; i<n; i++)
@@ -14,7 +15,8 @@ default: // on the grid with an offset
 for (int i=0; i<n; i++){
 	int i1 =rand()%(SPRITES_WIDTH), i2 =rand()%(SPRITES_HEIGHT);
 	ter[i] =(vect){SPRITE_SIZE*i1 +rand()%(offs*2)-offs,
-		SPRITE_SIZE*i2 +rand()%(offs*2)-offs};}
+		SPRITE_SIZE*i2 +rand()%(offs*2)-offs};
+	id[i] =rand()%2;}
 	break;}
 
 // sorting the array
@@ -25,12 +27,18 @@ for (int i=0; i<n; i++)
 		&& abs(ter[i].y-ter[j].y) <5*ASPECT_RATIO)
 			ter[j].x =-100;
 int m =0; for (int i=0; i<n; i++) if (ter[i].x!=-100) m++;
-vect *final_ter =(vect*)malloc(sizeof(vect)*m);
+vect* final_ter =malloc(sizeof(vect)*m);
+int*  final_id  =malloc(sizeof(int)*n);
 for (int i=0, j=m; i<n; i++){
 	if (ter[i].x!=-100){ j--;
-		final_ter[j] =ter[i];}}
+		final_ter[j] =ter[i];
+		final_id[j]  =id[i];}}
 // 2) ordering sprites for display
 
 
 free(ter);
-*nb =m;	return final_ter;}
+free(id);
+
+mc->t_sprite_v =final_ter;
+mc->sprite_id  =final_id;
+mc->nt =m;	return;}
