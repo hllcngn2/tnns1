@@ -18,7 +18,7 @@ fill_background_color(renderer);
 vect up_left =get_camera_offset(dc->camera, gc->plpos);
 if (dc->grid_on) draw_grid(renderer, up_left);
 draw_bushes(renderer, mc, dc, up_left);
-draw_character(renderer, up_left, gc->plpos, gc->facing, dc->tex[CHARACTER]);
+draw_character(renderer, up_left, gc->plpos, gc->facing, dc->textable[0].tex);
 return;}
 
 
@@ -70,25 +70,17 @@ for(; up_left.y+y<=TERRAIN_HEIGHT && y<WINDOW_HEIGHT;
 
 void draw_bushes(SDL_Renderer* renderer, Ctxt_map* mc, Ctxt_disp* dc,
 			vect up_left){
-  int		nt =mc->nt;
-  vect*		t_sprite_v =mc->t_sprite_v;
-  int*		sprite_id =mc->sprite_id;
-for (int i=0; i<nt; i++)
-	if (t_sprite_v[i].x <up_left.x+WINDOW_WIDTH
-		&& t_sprite_v[i].x >=up_left.x-SPRITE_SIZE
-		&& t_sprite_v[i].y <up_left.y+WINDOW_HEIGHT
-		&& t_sprite_v[i].y >=up_left.y-SPRITE_SIZE){
-	if (sprite_id[i]==0){ //bush
-		SDL_Rect draw_r =(SDL_Rect){t_sprite_v[i].x -up_left.x,
-					t_sprite_v[i].y -up_left.y,
-					SPRITE_SIZE,SPRITE_SIZE};
-		SDL_RenderCopy(renderer, dc->tex[BUSH16], NULL, &draw_r);}
-	else if (sprite_id[i]==1){ //tree
-		SDL_Rect draw_r =(SDL_Rect){t_sprite_v[i].x -up_left.x,
-					t_sprite_v[i].y -up_left.y,
-					40*ASPECT_RATIO,48*ASPECT_RATIO};
-		SDL_RenderCopy(renderer, dc->tex[TREEFANCY4048], NULL, &draw_r);}}
-	return;}
+for (Instance* inst=mc->instlist; inst; inst =inst->next)
+if (inst->x <up_left.x+WINDOW_WIDTH
+	&& inst->x >=up_left.x-SPRITE_SIZE
+	&& inst->y <up_left.y+WINDOW_HEIGHT
+	&& inst->y >=up_left.y-SPRITE_SIZE){
+	SDL_Rect draw_r =(SDL_Rect){inst->x -up_left.x,
+				inst->y -up_left.y,
+				inst->tex->w*ASPECT_RATIO,
+				inst->tex->h*ASPECT_RATIO};
+	SDL_RenderCopy(renderer, inst->tex->tex, NULL, &draw_r);}
+return;}
 
 
 void draw_character(SDL_Renderer* renderer, vect up_left, vect plpos,

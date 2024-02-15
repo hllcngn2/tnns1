@@ -21,31 +21,7 @@ SDL_Renderer *renderer =SDL_CreateRenderer(window, -1,
 Ctxt_disp* dc =malloc(sizeof(Ctxt_disp));
 { int grid_on =0; vect camera =(vect){0,0};
 *dc =(Ctxt_disp){ASPECT_RATIO, grid_on, camera, NULL};
-dc->tex =malloc(sizeof(SDL_Texture*)*N_SPRITE);
-
-//  character
-SDL_Surface *s_char =SDL_LoadBMP("ass/char_16x24-sprites.bmp");
-SDL_SetColorKey(s_char,SDL_TRUE,
-		SDL_MapRGB(s_char->format,0x6F,0xFF,0x7F));
-SDL_Texture *t_char =SDL_CreateTextureFromSurface(renderer, s_char);
-SDL_FreeSurface(s_char);
-dc->tex[CHARACTER] =t_char;
-//  small bush
-SDL_Surface *bush16 =SDL_LoadBMP("ass/bush_16.bmp");
-SDL_SetColorKey(bush16,SDL_TRUE,
-		SDL_MapRGB(bush16->format,0x6F,0xFF,0x7F));
-SDL_Texture *t_bush16 =SDL_CreateTextureFromSurface(renderer, bush16);
-SDL_FreeSurface(bush16);
-dc->tex[BUSH16] =t_bush16;
-//  fancy tree
-SDL_Surface *treefancy4048 =SDL_LoadBMP("ass/tree_fancy_40x48.bmp");
-SDL_SetColorKey(treefancy4048,SDL_TRUE,
-		SDL_MapRGB(treefancy4048->format,0x6F,0xFF,0x7F));
-SDL_Texture *t_treefancy4048
-	=SDL_CreateTextureFromSurface(renderer,treefancy4048);
-SDL_FreeSurface(treefancy4048);
-dc->tex[TREEFANCY4048] =t_treefancy4048; }
-
+dc->textable =load_textable(renderer); }
 
 //inline arguments parsing
 float p; int offs;
@@ -64,7 +40,8 @@ Direction facing =South;
 
 //terrain generation
 Ctxt_map* mc =malloc(sizeof(Ctxt_map));
-generate_terrain(mc, p, offs);
+mc->instlist =NULL;
+generate_terrain(mc, dc->textable, p, offs);
 
 
 
@@ -116,9 +93,10 @@ SDL_RenderPresent(renderer);
 }
 
 free(gc);
-free(mc->t_sprite_v); free(mc);
-for (int i=0; i<N_SPRITE; i++)
-	SDL_DestroyTexture(dc->tex[i]); free(dc);
+//free(mc->t_sprite_v);
+free(mc);
+//for (int i=0; i<N_SPRITE; i++)
+//	SDL_DestroyTexture(dc->tex[i]); free(dc);
 SDL_DestroyRenderer(renderer);
 SDL_DestroyWindow(window);
 SDL_Quit();	return 0;}

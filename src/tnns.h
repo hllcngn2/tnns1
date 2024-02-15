@@ -1,5 +1,4 @@
-#ifndef TNNS_H
-#define TNNS_H
+#pragma once
 #include "SDL2/SDL.h"
 #include <stdlib.h>
 #include <string.h>
@@ -11,6 +10,12 @@
 //default world generation
 #define GEN_DEFAULT_P	 0.6
 #define GEN_DEFAULT_OFFS 2
+#define N_SPRITE	 3
+
+//sprites index
+#define CHARACTER	0
+#define BUSH16		1
+#define TREEFANCY4048	2
 
 //controls
 #define K_UP		SDLK_w
@@ -50,12 +55,6 @@
 #define WINDOW_WIDTH		WINDOW_SPRITES_WIDTH*SPRITE_SIZE
 #define WINDOW_HEIGHT		WINDOW_SPRITES_HEIGHT*SPRITE_SIZE
 
-//sprites index
-#define N_SPRITE	3
-#define CHARACTER	0
-#define BUSH16		1
-#define TREEFANCY4048	2
-
 //keywords
 typedef enum{	North,East,South,West	} Direction;
 
@@ -63,25 +62,25 @@ typedef enum{	North,East,South,West	} Direction;
 typedef struct{	int x,y;	}vect;
 typedef struct{	int x,y,w,h;	}rect;
 
-typedef struct{	int h,w;
-		SDL_Texture* tex;	}Texture;
-typedef struct Instance{ int x,y;
-		Texture* tex;
-		struct Instance *previous,*next;	}Instance;
+typedef struct{	int		w,h;
+		SDL_Texture*	tex;	}Texture;
+typedef struct Instance{
+		int		x,y;
+		Texture*	tex;
+		struct Instance	*previous,*next;	}Instance;
 
 //context structs
 typedef struct {
 		int zoom;
 		int grid_on;
 		vect camera;
-		SDL_Texture** tex;	} Ctxt_disp;
+		Texture* textable;	} Ctxt_disp;
 typedef struct {
 		Direction facing;
 		vect plpos;		} Ctxt_game;
 typedef struct {
 		int nt;
-		vect* t_sprite_v;
-		int* sprite_id;		} Ctxt_map;
+		Instance* instlist;	} Ctxt_map;
 
 //other structures
 typedef struct {
@@ -92,7 +91,13 @@ typedef struct {
 
 
 // gen.c
-void generate_terrain(Ctxt_map* mc, float p,int offs);
+void generate_terrain(Ctxt_map* mc, Texture* textable, float p,int offs);
+
+// sprite.c
+Texture* load_textable(SDL_Renderer* renderer);
+void free_textable(Texture* textable);
+void addinst(Instance** instlist, Texture* tex, int x,int y);
+void free_instlist(Instance** instlist);
 
 // draw.c
 void draw(SDL_Renderer*, Ctxt_disp*, Ctxt_map*, Ctxt_game*);
@@ -102,5 +107,3 @@ void movement_keydown(int sym, Keys* keys, Ctxt_game* gc);
 void movement_keyup(int sym, Keys* keys, Ctxt_game* gc);
 void player_movement(Keys* keys, Ctxt_game* gc, Ctxt_disp* dc);
 void camera_movement(Keys* keys, Ctxt_game* gc, Ctxt_disp* dc);
-
-#endif
