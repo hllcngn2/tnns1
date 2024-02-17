@@ -28,7 +28,8 @@ textable[2] =(Texture){40,48,t_treefancy4048};
 return textable;}
 
 void free_textable(Texture* textable){
-return;}
+for (int i=0; i<N_SPRITE; i++)
+	SDL_DestroyTexture(textable[i].tex);	return;}
 
 
 void addinst(Instance** instlist, Texture* tex, int x,int y){
@@ -44,5 +45,8 @@ else {	inst->previous =(*instlist)->previous;
 		(*instlist)->next->previous =inst;}
 (*instlist) =inst;	return;}
 
-void free_instlist(Instance** instlist){
-return;}
+void free_instlist(Instance* instlist){
+if (!instlist)		return;
+//free_instlist(instlist->previous);
+free_instlist(instlist->next);
+free(instlist);		return;}

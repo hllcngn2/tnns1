@@ -7,9 +7,10 @@ vect* ter =malloc(sizeof(vect)*n);
 int*  id  =malloc(sizeof(int)*n);
 switch(offs){
 case -1: // random
-for (int i=0; i<n; i++)
+for (int i=0; i<n; i++){
 	ter[i] =(vect){rand()%(TERRAIN_WIDTH-SPRITE_SIZE),
 			rand()%(TERRAIN_HEIGHT-SPRITE_SIZE)};
+	id[i] =rand()%2;}
 	break;
 default: // on the grid with an offset
 for (int i=0; i<n; i++){

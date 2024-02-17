@@ -97,7 +97,7 @@ void generate_terrain(Ctxt_map* mc, Texture* textable, float p,int offs);
 Texture* load_textable(SDL_Renderer* renderer);
 void free_textable(Texture* textable);
 void addinst(Instance** instlist, Texture* tex, int x,int y);
-void free_instlist(Instance** instlist);
+void free_instlist(Instance* instlist);
 
 // draw.c
 void draw(SDL_Renderer*, Ctxt_disp*, Ctxt_map*, Ctxt_game*);
