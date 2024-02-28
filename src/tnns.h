@@ -12,11 +12,6 @@
 #define GEN_DEFAULT_OFFS 2
 #define N_SPRITE	 3
 
-//sprites index
-#define CHARACTER	0
-#define BUSH16		1
-#define TREEFANCY4048	2
-
 //controls
 #define K_UP		SDLK_w
 #define K_LEFT		SDLK_a
@@ -28,15 +23,6 @@
 #define K_TURNCAMERA	SDLK_BACKSLASH
 #define K_ZOOMIN	SDLK_z
 #define K_ZOOMOUT	SDLK_x
-
-//colors constants
-#define BG_R	0x6F
-#define BG_G	0xFF
-#define BG_B	0x7F
-#define GRID_R	0x94
-#define GRID_G	0x94
-#define GRID_B	0x49
-#define GRID_A	0x4F
 
 //default sizes
 // sprites
@@ -54,6 +40,21 @@
 #define WINDOW_SPRITES_HEIGHT	12
 #define WINDOW_WIDTH		WINDOW_SPRITES_WIDTH*SPRITE_SIZE
 #define WINDOW_HEIGHT		WINDOW_SPRITES_HEIGHT*SPRITE_SIZE
+
+//sprites index
+#define CHARACTER	0
+#define BUSH16		1
+#define TREEFANCY4048	2
+
+//colors constants
+#define BG_R	0x6F
+#define BG_G	0xFF
+#define BG_B	0x7F
+#define GRID_R	0x94
+#define GRID_G	0x94
+#define GRID_B	0x49
+#define GRID_A	0x4F
+
 
 //keywords
 typedef enum{	North,East,South,West	} Direction;
